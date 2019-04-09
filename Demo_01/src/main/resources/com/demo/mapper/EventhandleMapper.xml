@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.demo.mapper.EventhandleMapper" >
+  <resultMap id="BaseResultMap" type="com.demo.domain.Eventhandle" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="Photopath" property="photopath" jdbcType="VARCHAR" />
+    <result column="Status" property="status" jdbcType="BIGINT" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="Donetime" property="donetime" jdbcType="TIMESTAMP" />
+    <result column="Address" property="address" jdbcType="VARCHAR" />
+    <result column="describe" property="describe" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from eventhandle
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.demo.domain.Eventhandle" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into eventhandle ( eventnoticeID, Photopath,
+      employeeID, Status, CreateDate, 
+      Donetime, Address, describe
+      )
+    values ( #{eventnoticeid,jdbcType=BIGINT}, #{photopath,jdbcType=VARCHAR},
+      #{employeeid,jdbcType=BIGINT}, #{status,jdbcType=BIGINT}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{donetime,jdbcType=TIMESTAMP}, #{address,jdbcType=VARCHAR}, #{describe,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.demo.domain.Eventhandle" >
+    update eventhandle
+    set eventnoticeID = #{eventnoticeid,jdbcType=BIGINT},
+      Photopath = #{photopath,jdbcType=VARCHAR},
+      employeeID = #{employeeid,jdbcType=BIGINT},
+      Status = #{status,jdbcType=BIGINT},
+      CreateDate = #{createdate,jdbcType=TIMESTAMP},
+      Donetime = #{donetime,jdbcType=TIMESTAMP},
+      Address = #{address,jdbcType=VARCHAR},
+      describe = #{describe,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, eventnoticeID, Photopath, employeeID, Status, CreateDate, Donetime, Address, 
+    describe
+    from eventhandle
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, eventnoticeID, Photopath, employeeID, Status, CreateDate, Donetime, Address, 
+    describe
+    from eventhandle
+  </select>
+    <!--Eventhandle queryAll(Long id);-->
+    <select id="queryAll" resultMap="eventhandlemap" parameterType="java.lang.Long">
+        SELECT ev.id,en.eventName ename,en.id eid,em.id emid,em.username emname,ma.id maid,ma.typename maname,ev.`describe`,ev.Photopath,ev.`Status`,ev.CreateDate,ev.Donetime,ev.Address
+        FROM eventhandle as ev LEFT JOIN eventnotice en ON ev.eventnoticeID = en.id LEFT JOIN employee em ON ev.employeeID=em.id LEFT JOIN
+                 managetype ma ON ma.id=en.ManagetypeID WHERE em.id=#{id};
+    </select>
+    <resultMap id="eventhandlemap" type="com.demo.domain.Eventhandle">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="Photopath" property="photopath" jdbcType="VARCHAR" />
+        <result column="Status" property="status" jdbcType="BIGINT" />
+        <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+        <result column="Donetime" property="donetime" jdbcType="TIMESTAMP" />
+        <result column="Address" property="address" jdbcType="VARCHAR" />
+        <result column="describe" property="describe" jdbcType="LONGVARCHAR" />
+        <association property="eventnotice" javaType="com.demo.domain.Eventnotice">
+            <id column="eid" property="id"></id>
+            <result column="ename" property="eventname"/>
+        </association>
+        <association property="employee" javaType="com.demo.domain.Employee">
+            <id column="emid" property="id"></id>
+            <result column="emname" property="username"/>
+        </association>
+        <association property="managetype" javaType="com.demo.domain.Managetype">
+            <id column="maid" property="id"></id>
+            <result column="maname" property="typename"/>
+        </association>
+    </resultMap>
+    <select id="queryNow" resultMap="eventhandlemap" parameterType="java.lang.Long">
+        SELECT ev.id,en.eventName ename,en.id eid,em.id emid,em.username emname,ma.id maid,ma.typename maname,ev.`describe`,ev.Photopath,ev.`Status`,ev.CreateDate,ev.Donetime,ev.Address
+        FROM eventhandle as ev LEFT JOIN eventnotice en ON ev.eventnoticeID = en.id LEFT JOIN employee em ON ev.employeeID=em.id LEFT JOIN
+                 managetype ma ON ma.id=en.ManagetypeID WHERE em.id=#{id} and ev.status = 0;
+    </select>
+    <!--查询正在执行的任务-->
+    <select id="eventNow" resultMap="eventhandlemap" parameterType="java.lang.Long">
+        SELECT ev.id,en.eventName,em.username,ma.typename,ev.`describe`,ev.Photopath,ev.`Status`,ev.CreateDate,ev.Donetime,ev.Address
+        FROM eventhandle as ev LEFT JOIN eventnotice en ON ev.eventnoticeID = en.id LEFT JOIN employee em ON ev.employeeID=em.id LEFT JOIN
+                managetype ma ON ma.id=en.ManagetypeID WHERE em.id=#{id} and ev.status = 0 ORDER BY (NOW()-ev.CreateDate) LIMIT 1;
+    </select>
+    <!--任务提交void submit(Long id);-->
+    <update id="submit" parameterType="java.lang.Long">
+        update eventhandle
+        set Status = 1
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

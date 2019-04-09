@@ -1,0 +1,30 @@
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+    messages:
+      encoding: UTF-8
+  server:
+    tomcat:
+      uri-encoding: utf-8
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 50Mb
+      max-request-size: 50Mb
+#别名的配置
+mybatis:
+  type-aliases-package: com.demo.domain,com.demo.query
+server:
+  port: 8080
+

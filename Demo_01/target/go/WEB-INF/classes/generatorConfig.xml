@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- 自动生成器的配置-->
+<generatorConfiguration>
+    <classPathEntry   location="G:\maven\repository\mysql\mysql-connector-java\5.1.47\mysql-connector-java-5.1.47.jar"/>
+    <!--
+    	context：用于生成一组对象的环境(至少配置1个，可以配置多个)
+    	id:表达唯一的名称
+    	targetRuntime：用于指定生成的代码的运行环境(MyBatis3/MyBatis3Simple)
+    		MyBatis3:默认值
+    		MyBatis3Simple：不会生成与Example(案例)相关的方法
+    -->
+    <context id="DB2Tables"   targetRuntime="MyBatis3Simple" >
+        <!--
+            用于配置如果生成注释信息(最多可以配置一下)
+            suppressAllComments:阻止生成注释 ，默认为false
+            suppressDate:阻止生成的注释 时间戳，默认为false
+            addRemarkComments：注释是否添加数据库表的备注信息，默认为false
+         -->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!--
+        	这个应该比较清楚，配置连接数据库的基本信息
+        -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql:///test"
+                        userId="root" password="root">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.demo.entity"
+                            targetProject="src\main\java">
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="com.demo.mapper"
+                         targetProject="src\main\resources">
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.demo.mapper"
+                             targetProject="src\main\java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="upload" domainObjectName="Upload">
+            <generatedKey column="id" sqlStatement="MySql" />
+        </table>
+    </context>
+</generatorConfiguration>
