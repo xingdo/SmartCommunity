@@ -1,6 +1,7 @@
 package com.demo.controller;
 
 import com.demo.Application;
+import com.demo.mapper.EmployeeMapper;
 import com.demo.mapper.EventhandleMapper;
 import com.demo.service.IDepartmentService;
 import com.demo.service.IEmployeeService;
@@ -21,6 +22,8 @@ public class DepartmentControllerTest {
     private IEmployeeService employeeService;
     @Autowired
     private EventhandleMapper eventhandleMapper;
+    @Resource
+    private EmployeeMapper employeeMapper;
     @Test
     public void get() {
         System.out.println(departmentService.selectOne(1l));
@@ -28,7 +31,7 @@ public class DepartmentControllerTest {
 
     @Test
     public void list() {
-        System.out.println(employeeService.selectAll());
+        System.out.println(employeeMapper.queryOne("13594171524"));
     }
 
     @Test
